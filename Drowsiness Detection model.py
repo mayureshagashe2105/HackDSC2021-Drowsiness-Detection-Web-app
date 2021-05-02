@@ -71,6 +71,7 @@ model = keras.Sequential(
     )
 print(model.summary())
 
+# Model compilation with keeping track of accuracy while training & evaluation process
 model.compile(
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False),
         optimizer=keras.optimizers.Adam(),
