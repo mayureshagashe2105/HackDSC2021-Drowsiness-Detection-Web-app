@@ -26,3 +26,6 @@ This model is trained with the help of TensorFlow and is based upon convolutiona
   <tr><td>8</td><td>Dense</td><td>(None, 64)</td><td>32,832</td><td>Sigmoid</td></tr>
   <tr><td>9</td><td>Dense</td><td>(None, 2)</td><td>130</td><td>Softmax</td></tr>
 </table>
+
+## Eye_patch_Extractor_and_predictor Insights
+  This model uses OpenCV's "Haar Cascade Classifier" for face detection and after the proposal of the region of interest, it extracts the eye patch by the "Centroid Method" developed by us. These extracted features will be then passed to the trained model for Drowsiness Detection.
