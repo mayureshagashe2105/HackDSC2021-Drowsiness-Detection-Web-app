@@ -1,6 +1,15 @@
-# Drowsiness-Detection-Web-app
+# Drowsiness Detection Web app
 Prevents sleep deprivation road accidents, by alerting drowsy drivers.
-In this project, we have trained a convolutional neural network, to determine whether the eyes are closed or not, further, eye-patches are extracted from the face image to make all predictions. The dataset used for the training process can be accessed from <a href="https://www.kaggle.com/kutaykutlu/drowsiness-detection" target="_blank">here.</a>
+In this project, we have trained a convolutional neural network, to determine whether the eyes are closed or not, further, eye-patches are extracted from the face image to make all predictions. The dataset used for the training process can be accessed from the link given below: <br><a href="https://www.kaggle.com/kutaykutlu/drowsiness-detection" target="_blank">https://www.kaggle.com/kutaykutlu/drowsiness-detection.</a>
+
+## Live Testing The App
+```sh
+$ pip install -r requirements.txt
+```
+Then download `Eye_patch_extractor_&_GUI.py`, `ISHN0619_C3_pic.jpg`, `my_model (1).h5` & `sleep.jfif` files.
+```sh
+$ streamlit run Eye_patch_extractor_&_GUI.py
+```
 
 ## Understanding The Problem Statement
   According to the survey done by 'The Times of Inidia', nearly 40% of road accidents are caused by sleep deprivation. Fatigued drivers, long-duty driving are the major causes for the same. To solve this issue, this app primarily aims to predict whether or not the driver is sleeping, if found sleeping, it alerts the driver by making a high-frequency sound. This project is to avoid such sleep deprivation accidents!
@@ -27,5 +36,5 @@ This model is trained with the help of TensorFlow and is based upon convolutiona
   <tr><td>9</td><td>Dense</td><td>(None, 2)</td><td>130</td><td>Softmax</td></tr>
 </table>
 
-## Eye_patch_Extractor_and_predictor Insights
+## Eye Patch Extractor & Predictor Insights
   This model uses OpenCV's "Haar Cascade Classifier" for face detection and after the proposal of the region of interest, it extracts the eye patch by the "Centroid Method" developed by us. These extracted features will be then passed to the trained model for Drowsiness Detection.
