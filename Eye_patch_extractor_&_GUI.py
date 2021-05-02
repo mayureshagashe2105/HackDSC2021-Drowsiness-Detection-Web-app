@@ -1,3 +1,4 @@
+# Importing Project Dependencies
 import numpy as np
 import cv2
 import pandas as pd
@@ -7,17 +8,23 @@ import time
 import winsound
 import streamlit as st
 
+# Setting up config for GPU usage
 physical_devices = tf.config.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
+# Using  Har-cascade classifier from OpenCV
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+# Loading the trained model for prediction purpose
 model = keras.models.load_model('my_model (1).h5')
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
+# Title for GUI
 st.title('Drowsiness Detection')
 img = []
 
+# Navigation Bar
 nav_choice = st.sidebar.radio('Navigation', ('Home', 'Sleep Detection', 'Help Us Improve'), index=0)
+# Home page
 if nav_choice == 'Home':
     st.header('Prevents sleep deprivation road accidents, by alerting drowsy drivers.')
     st.image('ISHN0619_C3_pic.jpg')
@@ -40,7 +47,8 @@ if nav_choice == 'Home':
                 'dataset used is available <a href="https://www.kaggle.com/kutaykutlu/drowsiness-detection", '
                 'target="_blank">here</a></font></b>'
                 , unsafe_allow_html=True)
-
+    
+# Sleep Detection page
 elif nav_choice == 'Sleep Detection':
     st.header('Image Prediction')
     cap = 0
@@ -58,19 +66,22 @@ elif nav_choice == 'Sleep Detection':
         decision = 0
         st.markdown('<font face="Comic sans MS"><b>Detected Facial Region of Interest(ROI)&emsp;&emsp;&emsp;&emsp;&emsp;Extractd'
                     ' Eye Features from the ROI</b></font>', unsafe_allow_html=True)
+        
+        # Best of 3 mechanism for drowsiness detection
         for _ in range(3):
             cap = cv2.VideoCapture(0)
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            # Proposal of face region by the har cascade classifier
             for (x, y, w, h) in faces:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 5)
                 roi_gray = gray[y:y + w, x:x + w]
                 roi_color = frame[y:y + h, x:x + w]
             frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            #st.image(frame1, width=250)
 
             try:
+                # Cenentroid method for extraction of eye-patch 
                 centx, centy = roi_color.shape[:2]
                 centx //= 2
                 centy //= 2
@@ -83,13 +94,15 @@ elif nav_choice == 'Sleep Detection':
                 preds_eye1 = model.predict(np.expand_dims(eye_1, axis=0))
                 preds_eye2 = model.predict(np.expand_dims(eye_2, axis=0))
                 e1, e2 = np.argmax(preds_eye1), np.argmax(preds_eye2)
+                
+                # Display of face image and extracted eye-patch
                 img_container = st.beta_columns(4)
                 img_container[0].image(frame1, width=250)
                 img_container[2].image(cv2.cvtColor(eye_1, cv2.COLOR_BGR2RGB), width=150)
                 img_container[3].image(cv2.cvtColor(eye_2, cv2.COLOR_BGR2RGB), width=150)
-                #st.image(cv2.cvtColor(eye_1, cv2.COLOR_BGR2RGB))
-                #st.image(cv2.cvtColor(eye_2, cv2.COLOR_BGR2RGB))
                 print(e1, e2)
+                
+                # Decision variable for prediction
                 if e1 == 1 or e2 == 1:
                     pass
                 else:
@@ -108,6 +121,7 @@ elif nav_choice == 'Sleep Detection':
             finally:
                 cap.release()
 
+        # If found drowsy, then make a beep sound to alert the driver
         if decision == 0:
             st.error('Eye(s) are closed')
             winsound.Beep(2500, 2000)
@@ -116,7 +130,7 @@ elif nav_choice == 'Sleep Detection':
             st.success('Eyes are Opened')
         st.warning('Please select "Stop" and then "Start" to try again')
 
-
+# Help Us Improve page
 else:
     st.header('Help Us Improve')
     st.success('We would appreciate your Help!!!')
@@ -128,12 +142,14 @@ else:
         '<font face="Comic sans MS">better, and to use it in real-time situations, we require as much data as we can gather.</font> '
         , unsafe_allow_html=True)
     st.warning('NOTE: Your identity will be kept anonymous, and only your eye-patch will be extracted!!!')
+    # Image upload
     img_upload = st.file_uploader('Upload Image Here', ['png', 'jpg', 'jpeg'])
     if img_upload is not None:
         prog = st.progress(0)
         to_add = cv2.imread(str(img_upload.read()), 0)
-        # to_add = cv2.resize(to_add, (70, 40))
         to_add = pd.DataFrame(to_add)
+        
+        # Save it in the database
         to_add.to_csv('Data_from_users.csv', mode='a', header=False, index=False, sep=';')
         for i in range(100):
             time.sleep(0.001)
