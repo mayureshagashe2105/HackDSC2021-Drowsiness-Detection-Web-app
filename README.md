@@ -21,6 +21,15 @@ $ streamlit run Eye_patch_extractor_&_GUI.py
 3. This patch will be further used for the prediction purpose with the model trained in step 1.<br>
 4. Using this prediction, if the driver's eyes are closed a beep sound will be played, to alert the driver.<br>
 
+## Protoype Insights
+
+### Preiction Page:
+#### Keeping eyes open:
+<img src="Images/2021-05-03 (2).png"/>
+
+#### Keeping eyes closed:
+<img src="Images/2021-05-03 (3).png"/>
+
 ## Drowsiness Detetction Model Insights
 This model is trained with the help of TensorFlow and is based upon convolutional neural networks. It takes RGB images with the dimensions (86 * 86 * 3).
 ### Model Architecture
